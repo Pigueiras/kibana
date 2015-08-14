@@ -1,6 +1,5 @@
 define(function () {
   return function ChartTitleSplitFactory(d3) {
-
     /*
      * Adds div DOM elements to either the `.y-axis-chart-title` element or the
      * `.x-axis-chart-title` element based on the data layout.
@@ -8,12 +7,12 @@ define(function () {
      * `.chart-title` elements as row objects.
      * if not data.rows or data.columns, return no chart titles
      */
-
-    return function (selection, parent) {
+    return function (selection) {
       selection.each(function (data) {
         var div = d3.select(this);
+        debugger;
 
-        if (!data.slices) {
+        if (!data.series) {
           div.selectAll('.chart-title')
           .append('div')
           .data(function (d) {
@@ -23,11 +22,11 @@ define(function () {
             .append('div')
             .attr('class', 'chart-title');
 
-          //if (data.rows) {
-          //  d3.select(parent).select('.x-axis-chart-title').remove();
-          //} else {
-          //  d3.select(parent).select('.y-axis-chart-title').remove();
-          //}
+          if (data.rows) {
+            d3.select('.x-axis-chart-title').remove();
+          } else {
+            d3.select('.y-axis-chart-title').remove();
+          }
 
           return div;
         }

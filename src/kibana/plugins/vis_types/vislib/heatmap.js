@@ -1,0 +1,42 @@
+define(function (require) {
+  return function HistogramVisType(Private) {
+    var VislibVisType = Private(require('plugins/vis_types/vislib/_vislib_vis_type'));
+    var Schemas = Private(require('plugins/vis_types/_schemas'));
+
+    return new VislibVisType({
+      name: 'heatmap',
+      title: 'Heatmap',
+      icon: 'fa-th',
+      description: '-',
+      params: {
+        defaults: {
+        },
+        editor: require('text!plugins/vis_types/vislib/editors/heatmap.html')
+      },
+      hierarchicalData: true,
+      responseConverter: false,
+      schemas: new Schemas([
+        {
+          group: 'metrics',
+          name: 'metric',
+          title: 'Count',
+          min: 1,
+          max: 1,
+          aggFilter: ['count'],
+          defaults: [
+            { schema: 'metric', type: 'count' }
+          ]
+        },
+
+        {
+          group: 'buckets',
+          name: 'segment',
+          title: 'Aggregation',
+          min: 0,
+          max: Infinity,
+          aggFilter: ['date_histogram', 'terms']
+        },
+      ])
+    });
+  };
+});

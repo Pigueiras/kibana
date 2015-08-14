@@ -1,5 +1,5 @@
 define(function (require) {
-  return function XAxisFactory(d3, Private) {
+  return function XHeatmapAxisFactory(d3, Private) {
     var $ = require('jquery');
     var _ = require('lodash');
     var moment = require('moment');
@@ -9,16 +9,15 @@ define(function (require) {
     /**
      * Adds an x axis to the visualization
      *
-     * @class XAxis
+     * @class XHeatmapAxis
      * @constructor
      * @param args {{el: (HTMLElement), xValues: (Array), ordered: (Object|*),
      * xAxisFormatter: (Function), _attr: (Object|*)}}
      */
-    function XAxis(args) {
-      if (!(this instanceof XAxis)) {
-        return new XAxis(args);
+    function XHeatmapAxis(args) {
+      if (!(this instanceof XHeatmapAxis)) {
+        return new XHeatmapAxis(args);
       }
-
       this.el = args.el;
       this.xValues = args.xValues;
       this.ordered = args.ordered;
@@ -27,7 +26,7 @@ define(function (require) {
       this._attr = _.defaults(args._attr || {});
     }
 
-    _(XAxis.prototype).extend(ErrorHandler.prototype);
+    _(XHeatmapAxis.prototype).extend(ErrorHandler.prototype);
 
     /**
      * Renders the x axis
@@ -35,7 +34,7 @@ define(function (require) {
      * @method render
      * @returns {D3.UpdateSelection} Appends x axis to visualization
      */
-    XAxis.prototype.render = function () {
+    XHeatmapAxis.prototype.render = function () {
       d3.select(this.el).selectAll('.x-axis-div').call(this.draw());
     };
 
@@ -46,7 +45,7 @@ define(function (require) {
      * @method getScale
      * @returns {*} D3 scale function
      */
-    XAxis.prototype.getScale = function () {
+    XHeatmapAxis.prototype.getScale = function () {
       var ordered = this.ordered;
 
       if (ordered && ordered.date) {
@@ -64,7 +63,7 @@ define(function (require) {
      * @param scale {Function} D3 scale
      * @returns {*} D3 scale function
      */
-    XAxis.prototype.getDomain = function (scale) {
+    XHeatmapAxis.prototype.getDomain = function (scale) {
       var ordered = this.ordered;
 
       if (ordered && ordered.date) {
@@ -81,15 +80,15 @@ define(function (require) {
      * @param data {Array}
      * @returns {*} D3 scale function
      */
-    XAxis.prototype.getTimeDomain = function (scale, data) {
+    XHeatmapAxis.prototype.getTimeDomain = function (scale, data) {
       return scale.domain([this.minExtent(data), this.maxExtent(data)]);
     };
 
-    XAxis.prototype.minExtent = function (data) {
+    XHeatmapAxis.prototype.minExtent = function (data) {
       return this._calculateExtent(data || this.xValues, 'min');
     };
 
-    XAxis.prototype.maxExtent = function (data) {
+    XHeatmapAxis.prototype.maxExtent = function (data) {
       return this._calculateExtent(data || this.xValues, 'max');
     };
 
@@ -98,7 +97,7 @@ define(function (require) {
      * @param data
      * @param extent
      */
-    XAxis.prototype._calculateExtent = function (data, extent) {
+    XHeatmapAxis.prototype._calculateExtent = function (data, extent) {
       var ordered = this.ordered;
       var opts = [ordered[extent]];
 
@@ -122,7 +121,7 @@ define(function (require) {
      * @param {number} x - a value on the x-axis
      * @returns {number} - x + the ordered interval
      */
-    XAxis.prototype.addInterval = function (x) {
+    XHeatmapAxis.prototype.addInterval = function (x) {
       return this.modByInterval(x, +1);
     };
 
@@ -133,7 +132,7 @@ define(function (require) {
      * @param {number} x - a value on the x-axis
      * @returns {number} - x - the ordered interval
      */
-    XAxis.prototype.subtractInterval = function (x) {
+    XHeatmapAxis.prototype.subtractInterval = function (x) {
       return this.modByInterval(x, -1);
     };
 
@@ -145,7 +144,7 @@ define(function (require) {
      * @param {number} n - the number of intervals
      * @returns {number} - x + n intervals
      */
-    XAxis.prototype.modByInterval = function (x, n) {
+    XHeatmapAxis.prototype.modByInterval = function (x, n) {
       var ordered = this.ordered;
       if (!ordered) return x;
       var interval = ordered.interval;
@@ -173,7 +172,7 @@ define(function (require) {
      * @param xValues {Array} Array of x axis values
      * @returns {*} D3 scale function
      */
-    XAxis.prototype.getOrdinalDomain = function (scale, xValues) {
+    XHeatmapAxis.prototype.getOrdinalDomain = function (scale, xValues) {
       return scale.domain(xValues);
     };
 
@@ -186,7 +185,7 @@ define(function (require) {
      * @param width {Number} HTML Element width
      * @returns {*} D3 scale function
      */
-    XAxis.prototype.getRange = function (domain, width) {
+    XHeatmapAxis.prototype.getRange = function (domain, width) {
       var ordered = this.ordered;
 
       if (ordered && ordered.date) {
@@ -202,7 +201,7 @@ define(function (require) {
      * @param width {Number} HTML Element width
      * @returns {*} D3 x scale function
      */
-    XAxis.prototype.getXScale = function (width) {
+    XHeatmapAxis.prototype.getXScale = function (width) {
       var domain = this.getDomain(this.getScale());
 
       return this.getRange(domain, width);
@@ -211,12 +210,11 @@ define(function (require) {
     /**
      * Creates d3 xAxis function
      *
-     * @method getXAxis
+     * @method getXHeatmapAxis
      * @param width {Number} HTML Element width
      */
-    XAxis.prototype.getXAxis = function (width) {
+    XHeatmapAxis.prototype.getXAxis = function (width) {
       this.xScale = this.getXScale(width);
-      debugger;
 
       if (!this.xScale || _.isNaN(this.xScale)) {
         throw new Error('xScale is ' + this.xScale);
@@ -224,7 +222,7 @@ define(function (require) {
 
       this.xAxis = d3.svg.axis()
       .scale(this.xScale)
-      .ticks(10)
+      .ticks(24)
       .tickFormat(this.xAxisFormatter)
       .orient('bottom');
     };
@@ -235,7 +233,7 @@ define(function (require) {
      * @method draw
      * @returns {Function} Renders the x axis to a D3 selection
      */
-    XAxis.prototype.draw = function () {
+    XHeatmapAxis.prototype.draw = function () {
       var self = this;
       var div;
       var width;
@@ -283,7 +281,7 @@ define(function (require) {
      * @method filterOrRotate
      * @returns {Function} Filters or rotates x axis tick labels
      */
-    XAxis.prototype.filterOrRotate = function () {
+    XHeatmapAxis.prototype.filterOrRotate = function () {
       var self = this;
       var ordered = self.ordered;
       var axis;
@@ -312,7 +310,7 @@ define(function (require) {
      *
      * @returns {Function} Rotates x axis tick labels of a D3 selection
      */
-    XAxis.prototype.rotateAxisLabels = function () {
+    XHeatmapAxis.prototype.rotateAxisLabels = function () {
       var self = this;
       var text;
       var barWidth = self.xScale.rangeBand();
@@ -367,7 +365,7 @@ define(function (require) {
      * @param size {Number}
      * @returns {*|jQuery}
      */
-    XAxis.prototype.truncateLabel = function (text, size) {
+    XHeatmapAxis.prototype.truncateLabel = function (text, size) {
       var node = d3.select(text).node();
       var str = $(node).text();
       var width = node.getBBox().width;
@@ -396,7 +394,7 @@ define(function (require) {
      * @method filterAxisLabels
      * @returns {Function}
      */
-    XAxis.prototype.filterAxisLabels = function () {
+    XHeatmapAxis.prototype.filterAxisLabels = function () {
       var self = this;
       var startX = 0;
       var maxW;
@@ -435,7 +433,7 @@ define(function (require) {
      * @method fitTitles
      * @returns {Function}
      */
-    XAxis.prototype.fitTitles = function () {
+    XHeatmapAxis.prototype.fitTitles = function () {
       var visEls = $('.vis-wrapper');
       var xAxisChartTitle;
       var yAxisChartTitle;
@@ -503,7 +501,7 @@ define(function (require) {
      *
      * @method updateXaxisHeight
      */
-    XAxis.prototype.updateXaxisHeight = function () {
+    XHeatmapAxis.prototype.updateXaxisHeight = function () {
       var selection = d3.select(this.el).selectAll('.vis-wrapper');
 
       selection.each(function () {
@@ -521,6 +519,6 @@ define(function (require) {
 
     };
 
-    return XAxis;
+    return XHeatmapAxis;
   };
 });

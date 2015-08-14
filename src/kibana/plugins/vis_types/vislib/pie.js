@@ -35,7 +35,6 @@ define(function (require) {
         {
           group: 'buckets',
           name: 'segment',
-          icon: 'fa fa-scissors',
           title: 'Split Slices',
           min: 0,
           max: Infinity,

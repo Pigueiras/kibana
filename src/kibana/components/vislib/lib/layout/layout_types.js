@@ -14,7 +14,8 @@ define(function (require) {
       line: Private(require('components/vislib/lib/layout/types/column_layout')),
       area: Private(require('components/vislib/lib/layout/types/column_layout')),
       pie: Private(require('components/vislib/lib/layout/types/pie_layout')),
-      tile_map: Private(require('components/vislib/lib/layout/types/map_layout'))
+      tile_map: Private(require('components/vislib/lib/layout/types/map_layout')),
+      heatmap: Private(require('components/vislib/lib/layout/types/heatmap_layout'))
     };
   };
 });

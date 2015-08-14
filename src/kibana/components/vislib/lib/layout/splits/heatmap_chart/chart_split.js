@@ -22,7 +22,6 @@ define(function () {
         var charts = div.selectAll('charts')
         .append('div')
         .data(function (d) {
-          return [1, 2, 3];
           if (d.rows) {
             divClass = 'chart-row';
             return d.rows;
@@ -31,6 +30,7 @@ define(function () {
             return d.columns;
           } else {
             divClass = 'chart';
+            return [d];
           }
         })
         .enter()
