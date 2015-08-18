@@ -2,6 +2,7 @@ define(function (require) {
   return function HistogramVisType(Private) {
     var VislibVisType = Private(require('plugins/vis_types/vislib/_vislib_vis_type'));
     var Schemas = Private(require('plugins/vis_types/_schemas'));
+    var heatmapConverter = Private(require('components/agg_response/heatmap/heatmap'));
 
     return new VislibVisType({
       name: 'heatmap',
@@ -13,8 +14,8 @@ define(function (require) {
         },
         editor: require('text!plugins/vis_types/vislib/editors/heatmap.html')
       },
-      hierarchicalData: true,
-      responseConverter: false,
+      hierarchicalData: false,
+      responseConverter: heatmapConverter,
       schemas: new Schemas([
         {
           group: 'metrics',

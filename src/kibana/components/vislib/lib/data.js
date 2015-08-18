@@ -202,6 +202,9 @@ define(function (require) {
           type = 'slices';
         } else if (obj.geoJson) {
           type = 'geoJson';
+        } else if (obj.heatmap) {
+          type = 'heatmap';
+
         }
       });
 

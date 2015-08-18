@@ -10,7 +10,6 @@ define(function () {
     return function (selection) {
       selection.each(function (data) {
         var div = d3.select(this);
-        debugger;
 
         if (!data.series) {
           div.selectAll('.chart-title')

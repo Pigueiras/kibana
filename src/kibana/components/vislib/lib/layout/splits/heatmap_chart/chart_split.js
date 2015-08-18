@@ -5,33 +5,20 @@ define(function () {
      * For example, if the data has rows, it returns the same number of
      * `.chart` elements as row objects.
      */
+
     return function split(selection) {
       selection.each(function (data) {
         var div = d3.select(this)
         .attr('class', function () {
-          if (data.rows) {
-            return 'chart-wrapper-row';
-          } else if (data.columns) {
-            return 'chart-wrapper-column';
-          } else {
             return 'chart-wrapper';
-          }
         });
         var divClass;
 
         var charts = div.selectAll('charts')
         .append('div')
         .data(function (d) {
-          if (d.rows) {
-            divClass = 'chart-row';
-            return d.rows;
-          } else if (d.columns) {
-            divClass = 'chart-column';
-            return d.columns;
-          } else {
-            divClass = 'chart';
-            return [d];
-          }
+          divClass = 'chart';
+          return [d];
         })
         .enter()
           .append('div')
@@ -39,9 +26,6 @@ define(function () {
             return divClass;
           });
 
-        if (!data.series) {
-          charts.call(split);
-        }
       });
     };
   };

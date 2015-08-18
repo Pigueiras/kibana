@@ -30,18 +30,37 @@ define(function (require) {
     }
 
 
-    HeatmapChart.prototype.buildData = function(slices) {
-        var data = []
-        for (var i = 0; i < slices.children.length; i++) {
-            for (var j = 0; j < slices.children[i].children.length; j++) {
-                data.push([i, j, slices.children[i].children[j].children[0].name]);
-            }
+    HeatmapChart.prototype.buildData = function(data) {
+        var formatted_data = [];
+        var i = 0;
+        var j = 0;
+        $.each(data.timestamp, function(timestamp) {
+            $.each(data.service, function(service) {
+                var availability = null;
+                debugger;
+                try {
+                    availability = data.heatmap[timestamp][service];
+                }
+                catch (error) {
+                    if (error.name !== 'TypeError') {
+                        throw error
+                    }
+                }
+                if (availability === undefined) {
+                    availability = 'no data';
+                }
 
-        }
-        return data;
+                formatted_data.push([
+                    i,
+                    j,
+                    availability]);
+                j = j + 1;
+            });
+            j = 0;
+            i = i + 1;
+        });
 
-
-
+        return formatted_data;
     }
     /**
      * Adds pie paths to SVG
@@ -53,32 +72,31 @@ define(function (require) {
      * @param slices {Object} Chart data
      * @returns {D3.Selection} SVG with paths attached
      */
-    HeatmapChart.prototype.addPath = function (width, height, svg, slices) {
+    HeatmapChart.prototype.addPath = function (width, height, svg, data) {
       var self = this;
 
-      var gridWidth = Math.floor(width / slices.children.length),
-          gridHeight = Math.floor(height / 4),
-          buckets = slices.children.length,
-          colors = ["green", "orange", "red"]
-          data = self.buildData(slices);
+      var gridWidth = Math.floor(width / Object.keys(data.timestamp).length),
+          gridHeight = Math.floor(height / Object.keys(data.service).length),
+          colors = ["green", "orange", "red", "grey"]
+          formatted_data = self.buildData(data);
+      debugger;
 
-          var colorScale = d3.scale.ordinal()
-              .domain(["available", "degraded", "unavailable"])
-              .range(colors);
+      var colorScale = d3.scale.ordinal()
+          .domain(["available", "degraded", "unavailable", "no data"])
+          .range(colors);
 
-          var heatMap = svg.selectAll(".hour")
-              .data(data)
-              .enter().append("rect")
-              .attr("x", function(d) { return (d[0] - 1) * gridWidth; })
-              .attr("y", function(d) { return (d[1] - 1) * gridHeight; })
-              .attr("rx", 5)
-              .attr("ry", 4)
-              .attr("class", "hour bordered")
-              .attr("width", gridWidth)
-              .attr("height", gridHeight)
-              .style("fill", colors[0]);
+      var heatMap = svg.selectAll(".hour")
+          .data(formatted_data)
+          .enter().append("rect")
+          .attr("x", function(d) { return (d[0]) * gridWidth; })
+          .attr("y", function(d) { return (d[1]) * gridHeight; })
+          .attr("rx", 5)
+          .attr("ry", 4)
+          .attr("class", "hour bordered")
+          .attr("width", gridWidth)
+          .attr("height", gridHeight);
 
-          heatMap.style("fill", function(d) { return colorScale(d[2]); });
+      heatMap.style("fill", function(d) { return colorScale(d[2]); });
 
       return svg;
     };
@@ -99,7 +117,7 @@ define(function (require) {
           .append('g')
           //.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-          path = self.addPath(width, height, svg, data.slices);
+          path = self.addPath(width, height, svg, data);
 
           return svg;
         });

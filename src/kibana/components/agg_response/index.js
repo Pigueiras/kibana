@@ -4,7 +4,8 @@ define(function (require) {
       hierarchical: Private(require('components/agg_response/hierarchical/build_hierarchical_data')),
       pointSeries: Private(require('components/agg_response/point_series/point_series')),
       tabify: Private(require('components/agg_response/tabify/tabify')),
-      geoJson: Private(require('components/agg_response/geo_json/geo_json'))
+      geoJson: Private(require('components/agg_response/geo_json/geo_json')),
+      heatmap: Private(require('components/agg_response/heatmap/heatmap'))
     };
   };
 });
