@@ -15,9 +15,7 @@ define(function (require) {
      */
     function YHeatmapAxis(args) {
       this.el = args.el;
-      this.scale = null;
-      this.domain = [args.yMin, args.yMax];
-      this.yAxisFormatter = args.yAxisFormatter;
+      this.yValues = args.yValues;
       this._attr = args._attr || {};
     }
 
@@ -113,21 +111,11 @@ define(function (require) {
      * @returns {D3.Scale.QuantitiveScale|*} D3 yScale function
      */
     YHeatmapAxis.prototype.getYScale = function (height) {
-      var scale = this._getScaleType(this._attr.scale);
-      var domain = this._getExtents(this.domain);
+      this.yScale = d3.scale.ordinal()
+      .domain(this.yValues)
+      .rangeBands([height, 0]);
 
-      this.yScale = scale
-      .domain(domain)
-      .range([height, 0]);
-
-      if (!this._isUserDefined()) this.yScale.nice(); // round extents when not user defined
-      // Prevents bars from going off the chart when the y extents are within the domain range
-      if (this._attr.type === 'histogram') this.yScale.clamp(true);
       return this.yScale;
-    };
-
-    YHeatmapAxis.prototype.getScaleType = function () {
-      return this._attr.scale;
     };
 
     YHeatmapAxis.prototype.tickFormat = function () {
@@ -155,8 +143,6 @@ define(function (require) {
       // Create the d3 yAxis function
       this.yAxis = d3.svg.axis()
         .scale(yScale)
-        .tickFormat(this.tickFormat(this.domain))
-        .ticks(this.tickScale(height))
         .orient('left');
 
       return this.yAxis;
@@ -173,12 +159,13 @@ define(function (require) {
      * @returns {number} Number of y axis ticks
      */
     YHeatmapAxis.prototype.tickScale = function (height) {
-      var yTickScale = d3.scale.linear()
-      .clamp(true)
-      .domain([20, 40, 1000])
-      .range([0, 3, 11]);
+      var yTickScale = d3.scale.ordinal()
+      .domain(this.yValues)
+      .rangeBands([height, 0]);
 
-      return Math.ceil(yTickScale(height));
+
+
+      return yTickScale;
     };
 
     /**
@@ -191,35 +178,47 @@ define(function (require) {
       var self = this;
       var margin = this._attr.margin;
       var mode = this._attr.mode;
-      var isWiggleOrSilhouette = (mode === 'wiggle' || mode === 'silhouette');
-      var days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Sundayyyyy"];
+      var yValues = this.yValues;
 
       return function (selection) {
         selection.each(function () {
           var el = this;
-
 
           var div = d3.select(el);
           var width = $(el).parent().width();
           var height = $(el).height();
           var adjustedHeight = height - margin.top - margin.bottom;
 
+          var yAxis = self.getYAxis(adjustedHeight);
+
           // Append svg and y axis
           var svg = div.append('svg')
           .attr('width', width)
           .attr('height', height);
 
+          svg.append('g')
+          .attr('class', 'y axis')
+          .attr('transform', 'translate(' + (width - 2) + ',' + margin.top + ')')
+          .call(yAxis);
 
-          svg.append("g")
-            .attr('class', 'tick')
-            .selectAll('.y-ticks')
-            .data(days)
-            .enter().append("text")
-                .text(function(d) { return d; })
-                .attr("x", 0)
-                .attr("y", function(d, i) { return i * height/7; })
-                .attr("transform", "translate(0, " + height/7 / 2 + ")")
 
+          //svg.append("g")
+          //  .attr('class', 'y axis tick')
+          //  .selectAll('.y-ticks')
+          //  .data(yValues)
+          //  .enter().append("text")
+          //      .text(function(d) { return d; })
+          //      .attr("x", 0)
+          //      .attr("y", function(d, i) { return i * height/yValues.length; })
+          //      .attr("transform", "translate(0, " + height/yValues.length / 2 + ")")
+
+            var container = svg.select('g.y.axis').node();
+            if (container) {
+              var cWidth = Math.max(width, container.getBBox().width);
+              svg.attr('width', cWidth);
+              svg.select('g')
+              .attr('transform', 'translate(' + (cWidth - 2) + ',' + margin.top + ')');
+            }
           //svg.append('g')
           //.attr('class', 'y axis')
           //.attr('transform', 'translate(' + (width - 2) + ',' + margin.top + ')')

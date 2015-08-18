@@ -223,8 +223,6 @@ define(function (require) {
             if (container) {
               var cWidth = Math.max(width, container.getBBox().width);
               svg.attr('width', cWidth);
-              svg.select('g')
-              .attr('transform', 'translate(' + (cWidth - 2) + ',' + margin.top + ')');
             }
           }
         });

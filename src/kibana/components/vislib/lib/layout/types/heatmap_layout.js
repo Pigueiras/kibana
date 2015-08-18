@@ -1,7 +1,9 @@
 define(function (require) {
   return function ColumnLayoutFactory(d3, Private) {
     var chartSplit = Private(require('components/vislib/lib/layout/splits/heatmap_chart/chart_split'));
-
+    var yAxisSplit = Private(require('components/vislib/lib/layout/splits/heatmap_chart/y_axis_split'));
+    var xAxisSplit = Private(require('components/vislib/lib/layout/splits/heatmap_chart/x_axis_split'));
+    var chartTitleSplit = Private(require('components/vislib/lib/layout/splits/heatmap_chart/chart_title_split'));
     /**
      * Specifies the visualization layout for column charts.
      *
@@ -33,6 +35,36 @@ define(function (require) {
           children: [
             {
               type: 'div',
+              class: 'y-axis-col-wrapper',
+              children: [
+                {
+                  type: 'div',
+                  class: 'y-axis-col',
+                  children: [
+                    {
+                      type: 'div',
+                      class: 'y-axis-title'
+                    },
+                    {
+                      type: 'div',
+                      class: 'y-axis-chart-title',
+                      splits: chartTitleSplit
+                    },
+                    {
+                      type: 'div',
+                      class: 'y-axis-div-wrapper',
+                      splits: yAxisSplit
+                    }
+                  ]
+                },
+                {
+                  type: 'div',
+                  class: 'y-axis-spacer-block'
+                }
+              ]
+            },
+            {
+              type: 'div',
               class: 'vis-col-wrapper',
               children: [
                 {
@@ -40,13 +72,36 @@ define(function (require) {
                   class: 'chart-wrapper',
                   splits: chartSplit
                 },
+                {
+                  type: 'div',
+                  class: 'vis-alerts'
+                },
+                {
+                  type: 'div',
+                  class: 'x-axis-wrapper',
+                  children: [
+                    {
+                      type: 'div',
+                      class: 'x-axis-div-wrapper',
+                      splits: xAxisSplit
+                    },
+                    {
+                      type: 'div',
+                      class: 'x-axis-chart-title',
+                      splits: chartTitleSplit
+                    },
+                    {
+                      type: 'div',
+                      class: 'x-axis-title'
+                    }
+                  ]
+                }
               ]
             },
             {
               type: 'div',
               class: 'legend-col-wrapper'
-            },
-
+            }
           ]
         }
       ];

@@ -10,27 +10,7 @@ define(function () {
     return function (selection) {
       selection.each(function (data) {
         var div = d3.select(this);
-
-        if (!data.series) {
-          div.selectAll('.chart-title')
-          .append('div')
-          .data(function (d) {
-            return d.rows ? d.rows : d.columns;
-          })
-          .enter()
-            .append('div')
-            .attr('class', 'chart-title');
-
-          if (data.rows) {
-            d3.select('.x-axis-chart-title').remove();
-          } else {
-            d3.select('.y-axis-chart-title').remove();
-          }
-
-          return div;
-        }
-
-        return d3.select(this).remove();
+        return div;
       });
     };
   };

@@ -27,21 +27,17 @@ define(function (require) {
                     return "orange";
             }
         }, vis._attr),
-        chartTitle: new ChartTitle(vis.el)
-        //xAxis: new XHeatmapAxis({
-        //    el                : vis.el,
-        //    xValues           : data.xValues(),
-        //    ordered           : data.get('ordered'),
-        //    xAxisFormatter    : data.get('xAxisFormatter'),
-        //    _attr             : vis._attr
-        //})//,
-        //yAxis: new YHeatmapAxis({
-        //    el   : vis.el,
-        //    yMin : data.getYMin(),
-        //    yMax : data.getYMax(),
-        //    yAxisFormatter: data.get('yAxisFormatter'),
-        //    _attr: vis._attr
-        //})
+        chartTitle: new ChartTitle(vis.el),
+        xAxis: new XHeatmapAxis({
+            el                : vis.el,
+            xValues           : Object.keys(data.data.timestamp),
+            _attr             : vis._attr
+        }),
+        yAxis: new YHeatmapAxis({
+            el   : vis.el,
+            yValues : Object.keys(data.data.service),
+            _attr: vis._attr
+        })
       });
     };
   };

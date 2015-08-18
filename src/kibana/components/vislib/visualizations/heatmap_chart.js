@@ -37,7 +37,6 @@ define(function (require) {
         $.each(data.timestamp, function(timestamp) {
             $.each(data.service, function(service) {
                 var availability = null;
-                debugger;
                 try {
                     availability = data.heatmap[timestamp][service];
                 }
@@ -79,7 +78,6 @@ define(function (require) {
           gridHeight = Math.floor(height / Object.keys(data.service).length),
           colors = ["green", "orange", "red", "grey"]
           formatted_data = self.buildData(data);
-      debugger;
 
       var colorScale = d3.scale.ordinal()
           .domain(["available", "degraded", "unavailable", "no data"])

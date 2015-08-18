@@ -20,8 +20,6 @@ define(function (require) {
       }
       this.el = args.el;
       this.xValues = args.xValues;
-      this.ordered = args.ordered;
-      this.xAxisFormatter = args.xAxisFormatter;
       this.expandLastBucket = args.expandLastBucket == null ? true : args.expandLastBucket;
       this._attr = _.defaults(args._attr || {});
     }
