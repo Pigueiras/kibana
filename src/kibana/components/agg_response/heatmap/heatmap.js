@@ -45,6 +45,11 @@ define(function (require) {
                     return Number.parseFloat(k)
                 return k
             }),
+            "status": Object.keys(availability).map(function(k) {
+                if (!isNaN(k))
+                    return Number.parseFloat(k)
+                return k
+            }),
             "heatmap": data
         }
     };

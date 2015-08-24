@@ -17,16 +17,7 @@ define(function (require) {
 
       return new Handler(vis, {
         legend: new Legend(vis,
-            vis.el, ["available","degraded","unavailable"], function(data){
-            switch (data) {
-                case "available":
-                    return "green";
-                case "unavailable":
-                    return "red";
-                case "degraded":
-                    return "orange";
-            }
-        }, vis._attr),
+            vis.el, data.heatmapValues(), data.getHeatmapColorFunc(), vis._attr),
         chartTitle: new ChartTitle(vis.el),
         xAxis: new XHeatmapAxis({
             el                : vis.el,

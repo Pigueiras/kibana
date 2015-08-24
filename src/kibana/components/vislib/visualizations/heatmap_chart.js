@@ -35,7 +35,7 @@ define(function (require) {
 
         $.each(data.timestamp, function(index, timestamp) {
             $.each(data.service, function(index, service) {
-                var availability = null;
+                var availability = undefined;
                 try {
                     availability = data.heatmap[timestamp][service];
                 }
@@ -44,14 +44,14 @@ define(function (require) {
                         throw error
                     }
                 }
-                if (availability === undefined) {
-                    availability = 'no data';
+
+                if (availability !== undefined) {
+                    formatted_data.push([
+                        timestamp,
+                        service,
+                        availability]);
                 }
 
-                formatted_data.push([
-                    timestamp,
-                    service,
-                    availability]);
             });
         });
 
@@ -69,16 +69,14 @@ define(function (require) {
      */
     HeatmapChart.prototype.addPath = function (width, height, svg, data) {
       var self = this;
+      var tooltip = self.tooltip;
+      var isTooltip = self._attr.addTooltip;
 
       var gridWidth = Math.floor(width / Object.keys(data.timestamp).length),
           gridHeight = Math.floor(height / Object.keys(data.service).length),
-          colors = ["green", "orange", "red", "grey"]
           formatted_data = self.buildData(data);
 
-      var colorScale = d3.scale.ordinal()
-          .domain(["available", "degraded", "unavailable", "no data"])
-          .range(colors);
-
+      var colorScale = this.handler.data.getHeatmapColorFunc();
       var yScale = d3.scale.ordinal()
         .domain(data.service)
         .rangeBands([height, 0]);

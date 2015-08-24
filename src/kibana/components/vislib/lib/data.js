@@ -48,6 +48,9 @@ define(function (require) {
         }
       } else if (this.type === 'slices') {
         this.labels = this.pieNames();
+      } else if (this.type === 'heatmap') {
+        this.labels = this.heatmapValues();
+
       }
 
       this.color = this.labels ? color(this.labels) : undefined;
@@ -204,7 +207,6 @@ define(function (require) {
           type = 'geoJson';
         } else if (obj.heatmap) {
           type = 'heatmap';
-
         }
       });
 
@@ -658,6 +660,17 @@ define(function (require) {
       }, 0);
     };
 
+    Data.prototype.heatmapValues = function () {
+      var self = this;
+      var data = this.getVisData();
+      return data[0].status;
+    }
+
+    Data.prototype.getHeatmapColorFunc = function () {
+      return color(this.heatmapValues());
+    }
+
     return Data;
+
   };
 });

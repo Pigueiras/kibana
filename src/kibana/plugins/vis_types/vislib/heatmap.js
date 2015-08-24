@@ -11,6 +11,8 @@ define(function (require) {
       description: '-',
       params: {
         defaults: {
+            addLegend: true,
+            addTooltip: true
         },
         editor: require('text!plugins/vis_types/vislib/editors/heatmap.html')
       },
