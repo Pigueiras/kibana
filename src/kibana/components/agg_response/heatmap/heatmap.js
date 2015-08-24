@@ -33,8 +33,18 @@ define(function (require) {
         }
 
         return {
-            "timestamp": timestamp,
-            "service": service,
+            "xAxisFormatter": resp.columns[0].aggConfig.fieldFormatter(),
+            "yAxisFormatter": resp.columns[1].aggConfig.fieldFormatter(),
+            "timestamp": Object.keys(timestamp).map(function(k) {
+                if (!isNaN(k))
+                    return Number.parseFloat(k)
+                return k
+            }),
+            "service": Object.keys(service).map(function(k) {
+                if (!isNaN(k))
+                    return Number.parseFloat(k)
+                return k
+            }),
             "heatmap": data
         }
     };

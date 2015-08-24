@@ -16,6 +16,7 @@ define(function (require) {
     function YHeatmapAxis(args) {
       this.el = args.el;
       this.yValues = args.yValues;
+      this.yAxisFormatter = args.yAxisFormatter;
       this._attr = args._attr || {};
     }
 
@@ -143,6 +144,7 @@ define(function (require) {
       // Create the d3 yAxis function
       this.yAxis = d3.svg.axis()
         .scale(yScale)
+        .tickFormat(this.yAxisFormatter)
         .orient('left');
 
       return this.yAxis;
@@ -162,8 +164,6 @@ define(function (require) {
       var yTickScale = d3.scale.ordinal()
       .domain(this.yValues)
       .rangeBands([height, 0]);
-
-
 
       return yTickScale;
     };

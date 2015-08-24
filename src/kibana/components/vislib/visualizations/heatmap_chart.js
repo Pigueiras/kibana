@@ -32,10 +32,9 @@ define(function (require) {
 
     HeatmapChart.prototype.buildData = function(data) {
         var formatted_data = [];
-        var i = 0;
-        var j = 0;
-        $.each(data.timestamp, function(timestamp) {
-            $.each(data.service, function(service) {
+
+        $.each(data.timestamp, function(index, timestamp) {
+            $.each(data.service, function(index, service) {
                 var availability = null;
                 try {
                     availability = data.heatmap[timestamp][service];
@@ -50,13 +49,10 @@ define(function (require) {
                 }
 
                 formatted_data.push([
-                    i,
-                    j,
+                    timestamp,
+                    service,
                     availability]);
-                j = j + 1;
             });
-            j = 0;
-            i = i + 1;
         });
 
         return formatted_data;
@@ -83,11 +79,19 @@ define(function (require) {
           .domain(["available", "degraded", "unavailable", "no data"])
           .range(colors);
 
+      var yScale = d3.scale.ordinal()
+        .domain(data.service)
+        .rangeBands([height, 0]);
+
+      var xScale = d3.scale.ordinal()
+        .domain(data.timestamp)
+        .rangeBands([0, width]);
+
       var heatMap = svg.selectAll(".hour")
           .data(formatted_data)
           .enter().append("rect")
-          .attr("x", function(d) { return (d[0]) * gridWidth; })
-          .attr("y", function(d) { return (d[1]) * gridHeight; })
+          .attr("x", function(d) { return xScale(d[0]); })
+          .attr("y", function(d) { return yScale(d[1]); })
           .attr("rx", 5)
           .attr("ry", 4)
           .attr("class", "hour bordered")
@@ -101,19 +105,25 @@ define(function (require) {
 
     HeatmapChart.prototype.draw = function () {
       var self = this;
+      var $elem = $(this.chartEl);
+      var margin = this._attr.margin;
+      var elWidth = this._attr.width = $elem.width();
+      var elHeight = this._attr.height = $elem.height();
 
       return function (selection) {
         selection.each(function (data) {
           var div = d3.select(this);
-          var width = $(this).width();
-          var height = $(this).height();
+
           var path;
+          var width = elWidth;
+          var height = elHeight - margin.top - margin.bottom;
+
 
           var svg = div.append('svg')
           .attr('width', width)
-          .attr('height', height)
+          .attr('height', height + margin.top + margin.bottom)
           .append('g')
-          //.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+          .attr('transform', 'translate(0,' + margin.top + ')');
 
           path = self.addPath(width, height, svg, data);
 

@@ -20,6 +20,7 @@ define(function (require) {
       }
       this.el = args.el;
       this.xValues = args.xValues;
+      this.xAxisFormatter = args.xAxisFormatter;
       this.expandLastBucket = args.expandLastBucket == null ? true : args.expandLastBucket;
       this._attr = _.defaults(args._attr || {});
     }
@@ -200,9 +201,11 @@ define(function (require) {
      * @returns {*} D3 x scale function
      */
     XHeatmapAxis.prototype.getXScale = function (width) {
-      var domain = this.getDomain(this.getScale());
+      this.xScale = d3.scale.ordinal()
+        .domain(this.xValues)
+        .rangeBands([0, width]);
 
-      return this.getRange(domain, width);
+      return this.xScale;
     };
 
     /**
@@ -220,7 +223,6 @@ define(function (require) {
 
       this.xAxis = d3.svg.axis()
       .scale(this.xScale)
-      .ticks(24)
       .tickFormat(this.xAxisFormatter)
       .orient('bottom');
     };
@@ -250,7 +252,7 @@ define(function (require) {
         selection.each(function () {
 
           div = d3.select(this);
-          width = parentWidth / n;
+          width = parentWidth;
           height = $(this.parentElement).height();
 
           self.validateWidthandHeight(width, height);

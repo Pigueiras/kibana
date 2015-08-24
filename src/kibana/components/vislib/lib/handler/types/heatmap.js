@@ -30,12 +30,14 @@ define(function (require) {
         chartTitle: new ChartTitle(vis.el),
         xAxis: new XHeatmapAxis({
             el                : vis.el,
-            xValues           : Object.keys(data.data.timestamp),
+            xValues           : data.data.timestamp,
+            xAxisFormatter    : data.get('xAxisFormatter'),
             _attr             : vis._attr
         }),
         yAxis: new YHeatmapAxis({
             el   : vis.el,
-            yValues : Object.keys(data.data.service),
+            yValues : data.data.service,
+            yAxisFormatter: data.get('yAxisFormatter'),
             _attr: vis._attr
         })
       });

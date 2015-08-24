@@ -216,7 +216,6 @@ define(function (require) {
      */
     XAxis.prototype.getXAxis = function (width) {
       this.xScale = this.getXScale(width);
-      debugger;
 
       if (!this.xScale || _.isNaN(this.xScale)) {
         throw new Error('xScale is ' + this.xScale);
