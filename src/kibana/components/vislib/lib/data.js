@@ -667,7 +667,17 @@ define(function (require) {
     }
 
     Data.prototype.getHeatmapColorFunc = function () {
-      return color(this.heatmapValues());
+      return function(value) {
+        if (value == 'unavailable') {
+          return 'red';
+        } else if (value == 'available') {
+          return 'green';
+        } else if (value == 'degraded') {
+          return 'orange';
+        } else {
+          return 'black';
+        }
+      };
     }
 
     return Data;
