@@ -6,7 +6,7 @@ define(function (require) {
     var ChartTitle = Private(require('components/vislib/lib/chart_title'));
     var XHeatmapAxis = Private(require('components/vislib/lib/x_heatmap_axis'));
     var YHeatmapAxis = Private(require('components/vislib/lib/y_heatmap_axis'));
-
+    var moment = require('moment');
 
     /*
      * Handler for Pie visualizations.
@@ -22,7 +22,9 @@ define(function (require) {
         xAxis: new XHeatmapAxis({
             el                : vis.el,
             xValues           : data.data.timestamp,
-            xAxisFormatter    : data.get('xAxisFormatter'),
+            xAxisFormatter    : function(val) {
+                return moment(val).format('HH');
+            },
             _attr             : vis._attr
         }),
         yAxis: new YHeatmapAxis({
