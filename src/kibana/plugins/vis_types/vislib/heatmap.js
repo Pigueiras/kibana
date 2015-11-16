@@ -8,7 +8,7 @@ define(function (require) {
       name: 'heatmap',
       title: 'Heatmap',
       icon: 'fa-th',
-      description: '-',
+      description: 'Plugin specifically made for CERN and XSLS availabilities',
       params: {
         defaults: {
             addLegend: true,
